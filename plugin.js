@@ -351,6 +351,7 @@
         };
 
         // ── Жизненный цикл компонента ──────────────────────────────────────────
+        this.render  = function () { return files.render(); };
         this.create  = function () { return this.render(); };
         this.start   = function () { Lampa.Controller.enable('content'); };
         this.stop    = function () {};
