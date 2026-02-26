@@ -53,7 +53,21 @@
         if (e.type !== 'complite') return;
 
         try {
-            var $buttons = e.object.render().find('.full-start__buttons');
+            Log.info('Событие full: открыта карточка ' + (e.object.card && e.object.card.title || '—'));
+            Log.info(e.object);
+            // render — jQuery-объект (свойство), не метод; activity.render() — метод активности
+            var $root = e.object.render
+                ? $(e.object.render)
+                : e.object.activity && typeof e.object.activity.render === 'function'
+                    ? e.object.activity.render()
+                    : null;
+
+            if (!$root || !$root.length) {
+                Log.warn('Не удалось получить DOM карточки (render)');
+                return;
+            }
+
+            var $buttons = $root.find('.full-start__buttons');
 
             if (!$buttons.length) {
                 Log.warn('Кнопочная панель (.full-start__buttons) не найдена');
