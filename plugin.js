@@ -485,7 +485,7 @@
             Log.info('Открываем онлайн: ' + title);
             Lampa.Activity.push({
                 url:        '',
-                title:      Lampa.Lang.translate('title_online'),
+                title:      'Putilove plugin',
                 component:  COMPONENT_NAME,
                 search:     params.movie.title     || params.movie.name          || '',
                 search_two: params.movie.original_title || params.movie.original_name || '',
