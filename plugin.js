@@ -49,10 +49,11 @@
      * Обработчик события 'full' — открытие детальной страницы карточки.
      */
     function onFullCard(e) {
-        if (e.type !== 'start') return;
+        // 'complite' — намеренная опечатка в Lampa (complete -> complite)
+        if (e.type !== 'complite') return;
 
         try {
-            var $buttons = e.object.activity.template().find('.full-start__buttons');
+            var $buttons = e.object.render().find('.full-start__buttons');
 
             if (!$buttons.length) {
                 Log.warn('Кнопочная панель (.full-start__buttons) не найдена');
