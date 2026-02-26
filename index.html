@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Putilove — Lampa Plugin</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #0f0f0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .card {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 16px;
+            max-width: 640px;
+            width: 100%;
+            padding: 2.5rem;
+            text-align: center;
+        }
+
+        .dot {
+            width: 72px;
+            height: 72px;
+            background: #e62828;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 0 32px rgba(230, 40, 40, 0.5);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.4rem;
+            color: #ffffff;
+        }
+
+        .version {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .description {
+            font-size: 1rem;
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .section-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+
+        .url-box {
+            display: flex;
+            align-items: center;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .url-box span {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.88rem;
+            color: #e62828;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: left;
+        }
+
+        .copy-btn {
+            background: #e62828;
+            color: #fff;
+            border: none;
+            padding: 0 1.2rem;
+            height: 100%;
+            min-height: 44px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .copy-btn:hover { background: #b51e1e; }
+        .copy-btn.copied { background: #2a9d2a; }
+
+        .steps {
+            text-align: left;
+            margin-top: 2rem;
+            border-top: 1px solid #2a2a2a;
+            padding-top: 1.5rem;
+        }
+
+        .steps h2 {
+            font-size: 1rem;
+            color: #ccc;
+            margin-bottom: 1rem;
+        }
+
+        .steps ol {
+            padding-left: 1.3rem;
+            color: #888;
+            font-size: 0.9rem;
+            line-height: 2;
+        }
+
+        .steps ol li span {
+            color: #e0e0e0;
+        }
+
+        footer {
+            margin-top: 2rem;
+            font-size: 0.78rem;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="dot"></div>
+    <h1>Putilove</h1>
+    <p class="version">Lampa Plugin · v1.0.0</p>
+
+    <p class="description">
+        Плагин добавляет кнопку на страницу фильма / сериала в медиаплеере Lampa.<br/>
+        При нажатии выводит уведомление на экран.
+    </p>
+
+    <p class="section-label">URL плагина</p>
+    <div class="url-box">
+        <span id="plugin-url"><!-- заполняется скриптом --></span>
+        <button class="copy-btn" id="copy-btn" onclick="copyUrl()">Копировать</button>
+    </div>
+
+    <div class="steps">
+        <h2>Как подключить в Lampa</h2>
+        <ol>
+            <li>Откройте Lampa → <span>Настройки</span></li>
+            <li>Перейдите в раздел <span>Плагины</span></li>
+            <li>Нажмите <span>Добавить плагин</span></li>
+            <li>Вставьте URL выше и сохраните</li>
+            <li>Перезапустите Lampa — кнопка появится на странице любого фильма или сериала</li>
+        </ol>
+    </div>
+</div>
+
+<footer>github.com · GitHub Pages</footer>
+
+<script>
+    (function () {
+        // Формируем URL до plugin.js на основе текущего хоста
+        var base = window.location.href.replace(/\/?(?:index\.html)?$/, '');
+        var url  = base.replace(/\/$/, '') + '/plugin.js';
+
+        document.getElementById('plugin-url').textContent = url;
+    })();
+
+    function copyUrl() {
+        var url = document.getElementById('plugin-url').textContent;
+        var btn = document.getElementById('copy-btn');
+
+        navigator.clipboard.writeText(url).then(function () {
+            btn.textContent = 'Скопировано!';
+            btn.classList.add('copied');
+            setTimeout(function () {
+                btn.textContent = 'Копировать';
+                btn.classList.remove('copied');
+            }, 2000);
+        }).catch(function () {
+            // Fallback для старых браузеров
+            var ta = document.createElement('textarea');
+            ta.value = url;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+        });
+    }
+</script>
+
+</body>
+</html>
