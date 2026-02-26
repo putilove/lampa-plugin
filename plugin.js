@@ -3,7 +3,7 @@
 
     function startPlugin() {
         window.plugin_mybutton_ready = true;
-
+        console.log('plugin started');
         // HTML шаблон кнопки
         var button = `
             <div class="full-start__button view--mybutton" style="cursor: pointer;">
