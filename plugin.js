@@ -351,8 +351,10 @@
         };
 
         // ── Жизненный цикл компонента ──────────────────────────────────────────
+        // create() вызывается Lampa в контексте ActivitySlide (this — не компонент),
+        // поэтому используем замкнутую переменную files вместо this.render().
         this.render  = function () { return files.render(); };
-        this.create  = function () { return this.render(); };
+        this.create  = function () { return files.render(); };    // НЕ this.render()
         this.start   = function () { Lampa.Controller.enable('content'); };
         this.stop    = function () {};
 
