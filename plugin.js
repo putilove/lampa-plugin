@@ -19,10 +19,11 @@
     /**
      * Строит кнопку для панели действий на странице фильма/сериала.
      * Иконка — красный круг; при нажатии выводится уведомление.
+     * @param {Object} movie — объект карточки (e.data.movie)
      */
-    function createActionButton() {
+    function createActionButton(movie) {
         var $btn = $([
-            '<div class="full-start__button selector">',
+            '<div class="full-start__button selector putilove--button">',
                 '<div style="',
                     'width:52px;height:52px;',
                     'background:#e62828;',
@@ -36,7 +37,7 @@
 
         // Клик / Enter на пульте
         $btn.on('hover:enter', function () {
-            Log.info('Button pressed');
+            Log.info('Button pressed — ' + ((movie && movie.title) || '—'));
             Lampa.Noty.show('нажата кнопка. плагин putilove');
         });
 
@@ -46,6 +47,20 @@
     // ─── Логика добавления кнопки ─────────────────────────────────────────────
 
     /**
+     * Добавляет кнопку на страницу карточки.
+     * params.render — jQuery-элемент (.button--play), перед которым вставляем кнопку.
+     * params.movie  — объект карточки.
+     */
+    function addButton(params) {
+        // Защита от дублирования
+        if (params.render.closest('.full-start__buttons').find('.putilove--button').length) return;
+
+        var $btn = createActionButton(params.movie);
+        params.render.before($btn);
+        Log.info('Кнопка добавлена: ' + ((params.movie && params.movie.title) || '—'));
+    }
+
+    /**
      * Обработчик события 'full' — открытие детальной страницы карточки.
      */
     function onFullCard(e) {
@@ -53,29 +68,10 @@
         if (e.type !== 'complite') return;
 
         try {
-            Log.info('Событие full: открыта карточка ' + (e.object.card && e.object.card.title || '—'));
-            Log.info(e.object);
-            // render — jQuery-объект (свойство), не метод; activity.render() — метод активности
-            var $root = e.object.render
-                ? $(e.object.render)
-                : e.object.activity && typeof e.object.activity.render === 'function'
-                    ? e.object.activity.render()
-                    : null;
-
-            if (!$root || !$root.length) {
-                Log.warn('Не удалось получить DOM карточки (render)');
-                return;
-            }
-
-            var $buttons = $root.find('.full-start__buttons');
-
-            if (!$buttons.length) {
-                Log.warn('Кнопочная панель (.full-start__buttons) не найдена');
-                return;
-            }
-
-            $buttons.append(createActionButton());
-            Log.info('Кнопка добавлена на карточку: ' + (e.object.card && e.object.card.title || '—'));
+            addButton({
+                render: e.object.activity.render().find('.button--play'),
+                movie:  e.data.movie
+            });
         } catch (err) {
             Log.error('Ошибка при добавлении кнопки: ' + err);
         }
