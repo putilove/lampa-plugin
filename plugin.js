@@ -3,7 +3,7 @@
 
     // ─── Конфигурация ────────────────────────────────────────────────────────────
     var PLUGIN_NAME    = 'putilove';
-    var PLUGIN_VERSION = '1.0.0';
+    var PLUGIN_VERSION = '1.0.0.a';
     var COMPONENT_NAME = PLUGIN_NAME + '_online';
 
     // URL lampac-совместимого сервера. Можно изменить в настройках Lampa
