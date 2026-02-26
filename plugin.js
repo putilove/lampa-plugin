@@ -1,104 +1,107 @@
 /**
- * Плагин MyButton для Lampa
- * Добавляет кнопку на страницу фильма/сериала
+ * Плагин кнопки любви для Lampa
+ * Добавляет милую кнопку с сердечком в верхнее меню
  */
 
 (function () {
     'use strict';
 
-    var PLUGIN_NAME = 'mybutton';
-    var PLUGIN_VERSION = '1.0.0';
-
-    function log(msg) {
-        console.log('[' + PLUGIN_NAME + '] ' + msg);
-    }
-
     function startPlugin() {
-        log('Инициализация плагина v' + PLUGIN_VERSION);
-
-        window.plugin_mybutton_ready = true;
-
-        // Добавляем перевод для текста кнопки
-        Lampa.Lang.add({
-            mybutton_title: {
-                ru: 'Моя кнопка',
-                en: 'My button',
-                uk: 'Моя кнопка'
-            }
-        });
-
-        log('Переводы зарегистрированы');
-
-        var button = `
-            <div class="full-start__button view--mybutton selector">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M11 2a3 3 0 0 1 3 3v6a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3zM5 1a4 4 0 0 0-4 4v6a4 4 0 0 0 4 4h6a4 4 0 0 0 4-4V5a4 4 0 0 0-4-4z"/>
-                </svg>
-                <span>#{mybutton_title}</span>
-            </div>
-        `;
-
-        function handleButtonClick(data) {
-            var movie = data.movie || data;
-            var title = movie.title || movie.name || 'Unknown';
-            log('Кнопка нажата для: ' + title);
-            Lampa.Noty.show('Нажата кнопка для: ' + title);
-        }
+        window.plugin_love_button_ready = true;
 
         function add() {
-            log('Подписка на события full...');
-
-            Lampa.Listener.follow('full', function (e) {
-                if (e.type == 'complite') {
-                    log('Страница фильма загружена, добавляем кнопку...');
-
-                    try {
-                        var btn = $(Lampa.Lang.translate(button));
-
-                        btn.on('hover:enter', function () {
-                            handleButtonClick(e.data);
-                        });
-
-                        if (e.data && e.object) {
-                            var render = e.object.activity.render();
-                            var existing = render.find('.full-start__button').last();
-
-                            if (existing.length) {
-                                existing.after(btn);
-                                log('Кнопка успешно добавлена');
-                            } else {
-                                log('WARN: Не найдены кнопки .full-start__button на странице');
-                            }
-                        } else {
-                            log('WARN: e.data или e.object недоступны');
-                        }
-                    } catch (error) {
-                        console.error('[' + PLUGIN_NAME + '] Ошибка при добавлении кнопки:', error);
-                    }
+            // Функция для показа сообщения любви
+            function showLoveMessage() {
+                if (typeof Lampa !== 'undefined' && Lampa.Noty) {
+                    Lampa.Noty.show('Привет кисунька, я тебя люблю =* 💕');
+                } else {
+                    alert('Привет кисунька, я тебя люблю =* 💕');
                 }
-            });
+            }
 
-            log('Плагин готов к работе ✓');
+            // Добавляем кнопку в верхнее меню
+            function addLoveButton() {
+                // Создаем кнопку с сердечком
+                var loveButton = $('<div class="head__love-button" style="' +
+                    'position: absolute; ' +
+                    'right: 20px; ' +
+                    'top: 50%; ' +
+                    'transform: translateY(-50%); ' +
+                    'width: 40px; ' +
+                    'height: 40px; ' +
+                    'background: linear-gradient(45deg, #ff6b6b, #ff8e8e); ' +
+                    'border-radius: 50%; ' +
+                    'display: flex; ' +
+                    'align-items: center; ' +
+                    'justify-content: center; ' +
+                    'cursor: pointer; ' +
+                    'transition: all 0.3s ease; ' +
+                    'box-shadow: 0 2px 10px rgba(255, 107, 107, 0.3); ' +
+                    'z-index: 1000;' +
+                    '">' +
+                    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" style="color: white; fill: currentColor;">' +
+                    '<path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5 2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"/>' +
+                    '</svg>' +
+                    '</div>');
+
+                // Добавляем эффекты при наведении
+                loveButton.on('mouseenter', function() {
+                    $(this).css({
+                        'transform': 'translateY(-50%) scale(1.1)',
+                        'box-shadow': '0 4px 20px rgba(255, 107, 107, 0.5)'
+                    });
+                });
+
+                loveButton.on('mouseleave', function() {
+                    $(this).css({
+                        'transform': 'translateY(-50%) scale(1)',
+                        'box-shadow': '0 2px 10px rgba(255, 107, 107, 0.3)'
+                    });
+                });
+
+                // Обработчик клика
+                loveButton.on('click', function() {
+                    showLoveMessage();
+                });
+
+                // Добавляем кнопку в верхнее меню
+                var headElement = $('.head');
+                if (headElement.length > 0) {
+                    headElement.append(loveButton);
+                    console.log('Кнопка любви добавлена в верхнее меню');
+                } else {
+                    // Если элемент не найден, пробуем через некоторое время
+                    setTimeout(addLoveButton, 1000);
+                }
+            }
+
+            // Инициализация кнопки
+            if (window.appready) {
+                addLoveButton();
+            } else {
+                Lampa.Listener.follow('app', function (e) {
+                    if (e.type == 'ready') {
+                        addLoveButton();
+                    }
+                });
+            }
         }
 
+        // Инициализация плагина
         if (window.appready) {
-            log('Приложение уже готово, запускаем напрямую');
             add();
         } else {
-            log('Ожидание готовности приложения...');
             Lampa.Listener.follow('app', function (e) {
                 if (e.type == 'ready') {
-                    log('Приложение готово, запускаем');
                     add();
                 }
             });
         }
     }
 
-    if (!window.plugin_mybutton_ready) {
+    // Проверка на дублирование и запуск
+    if (!window.plugin_love_button_ready) {
         startPlugin();
-    } else {
-        console.warn('[' + PLUGIN_NAME + '] Плагин уже загружен, пропускаем инициализацию');
     }
 
 })();
